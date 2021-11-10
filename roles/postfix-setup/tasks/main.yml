@@ -1,0 +1,32 @@
+---
+
+- name: Install postfix
+  yum:
+    name: postfix
+    state: present
+
+- name: Create SSL dir
+  file:
+    path: /etc/postfix/ssl
+    state: directory
+    owner: root
+    group: root
+
+- name: Generate an OpenSSL private key
+  openssl_privatekey:
+    path: /etc/postfix/ssl/server-key.pem
+
+- name: Get information on generated key
+  openssl_privatekey_info:
+    path: /etc/postfix/ssl/server-key.pem
+  register: result
+
+- name: Dump information
+  debug:
+    var: result
+
+- name: Backup main.cf, master.cf
+  shell: cp -rp {{ item }} {{ item }}_bk
+  with_together:
+    - /etc/postfix/main.cf
+    - /etc/postfix/master.cf

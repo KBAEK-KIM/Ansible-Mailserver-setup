@@ -1,0 +1,21 @@
+---
+
+myhostname: mail.yourdomain.com
+mydomain: yourdomain.com
+myorigin: $mydomain
+inet_interfaces: all
+inet_protocols: ipv4
+mydestination: "$myhostname, localhost.$mydomain, localhost, $mydomain"
+
+# set network ip ex) mynetworks: 172.0.0.1/32
+mynetworks: 172.0.0.1/32
+
+smtpd-tls-set:
+  - "smtpd_use_tls = yes"
+  - "smtpd_tls_cert_file = /etc/postfix/ssl/server-key.crt"
+  - "smtpd_tls_key_file = /etc/postfix/ssl/server-key.pem"
+  - "smtpd_tls_loglevel = 1"
+
+etc-set:
+  - "message_size_limit = 20480000" # mail size limit
+  - "mailbox_size_limit = 0"        # mailbox size limit 0is unlimit

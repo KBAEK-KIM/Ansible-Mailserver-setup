@@ -1,0 +1,8 @@
+---
+- name: mailserver setup
+  hosts: all
+  serial: 1
+
+  roles:
+    - postfix-setup
+    - dovecot-setup
