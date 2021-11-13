@@ -1,0 +1,7 @@
+# Hosts
+[MailServer]
+mailserver001 ansible_host=
+
+# Vars
+[MailServer:vars]
+ansible_ssh_pass=

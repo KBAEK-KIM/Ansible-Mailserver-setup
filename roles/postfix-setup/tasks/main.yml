@@ -1,8 +1,8 @@
 ---
 
-- name: Install postfix
+- name: Install required modules
   yum:
-    name: postfix
+    name: "{{ required-modules }}"
     state: present
 
 - name: Create SSL dir
@@ -13,10 +13,14 @@
     group: root
 
 - name: Generate an OpenSSL private key
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
   openssl_privatekey:
     path: /etc/postfix/ssl/server-key.pem
 
 - name: Get information on generated key
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
   openssl_privatekey_info:
     path: /etc/postfix/ssl/server-key.pem
   register: result
@@ -25,8 +29,9 @@
   debug:
     var: result
 
-- name: Backup main.cf, master.cf
-  shell: cp -rp {{ item }} {{ item }}_bk
-  with_together:
-    - /etc/postfix/main.cf
-    - /etc/postfix/master.cf
+- name: Generate an OpenSSL CSR
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+  openssl_csr:
+    path: /etc/postfix/ssl/server-key.csr
+    privatekey_path: /etc/postfix/ssl/server-key.pem
