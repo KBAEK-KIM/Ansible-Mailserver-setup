@@ -1,9 +1,17 @@
 ---
 
-- name: Install required modules
+- name: Install require modules
   yum:
-    name: "{{ required-modules }}"
+    name: "{{ item }}"
     state: present
+  loop:
+    - "{{ require_modules }}"
+
+- name: Install pip
+  shell: /usr/bin/python3 -m pip install --upgrade pip
+
+- name: Install pyopenssl
+  shell: pip install pyopenssl
 
 - name: Create SSL dir
   file:
@@ -35,3 +43,41 @@
   openssl_csr:
     path: /etc/postfix/ssl/server-key.csr
     privatekey_path: /etc/postfix/ssl/server-key.pem
+
+- name: Edit postfix main.cf
+  template:
+    dest: /etc/postfix/main.cf
+    src: postfix/main.cf.j2
+    mode: "0644"
+
+- name: Edit postfix master.cf
+  template:
+    dest: /etc/postfix/master.cf
+    src: postfix/master.cf.j2
+    mode: "0644"
+
+- name: Edit dovecot 10-master.conf
+  template:
+    dest: /etc/dovecot/conf.d/10-master.conf
+    src: dovecot/10-master.conf.j2
+    mode: "0644"
+
+- name: Edit dovecot 10-auth.conf
+  template:
+    dest: /etc/dovecot/conf.d/10-auth.conf
+    src: dovecot/10-auth.conf.j2
+    mode: "0644"
+
+- name: Edit dovecot 20-pop3.conf
+  template:
+    dest: /etc/dovecot/conf.d/20-pop3.conf
+    src: dovecot/20-pop3.conf.j2
+    mode: "0644"
+
+- name: Restart postfix and dovecot
+  service:
+    name: "{{ item }}"
+    state: restarted
+  with_items:
+    - postfix
+    - dovecot

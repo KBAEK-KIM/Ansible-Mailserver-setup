@@ -1,9 +1,0 @@
----
-
-- name: install dovecot
-  yum:
-    name: dovecot
-    state: present
-
-
-    

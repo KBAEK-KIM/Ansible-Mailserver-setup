@@ -1,6 +1,6 @@
 # Hosts
 [MailServer]
-mailserver001 ansible_host=
+mailserver001.com ansible_host=
 
 # Vars
 [MailServer:vars]
